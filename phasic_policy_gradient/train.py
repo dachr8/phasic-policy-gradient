@@ -5,7 +5,7 @@ from . import torch_util as tu
 from .impala_cnn import ImpalaEncoder
 from . import logger
 from .envs import get_venv
-from constants import ENV_NAMES
+from .constants import ENV_NAMES
 
 
 def train_fn(env_name="coinrun",
