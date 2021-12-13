@@ -22,20 +22,21 @@ def rcm(start, stop, modulus, mode="[)"):
     right_hit = stop % modulus == 0
 
     return (start < stop) and (
-        (left_hit and mode[0] == "[") or (middle_hit) or (right_hit and mode[1] == "]")
+            (left_hit and mode[0] == "[") or (middle_hit) or (right_hit and mode[1] == "]")
     )
+
 
 class LogSaveHelper:
     def __init__(
-        self,
-        model: "(nn.Module)",
-        ic_per_step: "(int) number of iteractions per logging step",
-        comm: "(MPI.Comm)" = None,
-        ic_per_save: "(int) save only after this many interactions" = 100_000,
-        save_mode: "(str) last: keep last model, all: keep all}" = "none",
-        t0: "(float) override training start timestamp" = None,
-        log_callbacks: "(list) extra callbacks to run before self.log()" = None,
-        log_new_eps: "(bool) whether to log statistics for new episodes from non-rolling buffer" = False,
+            self,
+            model: "(nn.Module)",
+            ic_per_step: "(int) number of iteractions per logging step",
+            comm: "(MPI.Comm)" = None,
+            ic_per_save: "(int) save only after this many interactions" = 100_000,
+            save_mode: "(str) last: keep last model, all: keep all}" = "none",
+            t0: "(float) override training start timestamp" = None,
+            log_callbacks: "(list) extra callbacks to run before self.log()" = None,
+            log_new_eps: "(bool) whether to log statistics for new episodes from non-rolling buffer" = False,
     ):
         self.model = model
         self.comm = comm or MPI.COMM_WORLD
@@ -110,7 +111,7 @@ class LogSaveHelper:
             th.cuda.reset_max_memory_allocated()
 
         if self.comm.rank == 0:
-            print("RCALL_LOGDIR: ", os.environ["RCALL_LOGDIR"])
+            print("RCALL_LOGDIR: ")  # , os.environ["RCALL_LOGDIR"])
         logger.dumpkvs()
         self.last_time = cur_time
         self.last_ic = self.total_interact_count
