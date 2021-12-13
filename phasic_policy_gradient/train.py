@@ -5,30 +5,32 @@ from . import torch_util as tu
 from .impala_cnn import ImpalaEncoder
 from . import logger
 from .envs import get_venv
+from constants import ENV_NAMES
+
 
 def train_fn(env_name="coinrun",
-    distribution_mode="hard",
-    arch="dual",  # 'shared', 'detach', or 'dual'
-    # 'shared' = shared policy and value networks
-    # 'dual' = separate policy and value networks
-    # 'detach' = shared policy and value networks, but with the value function gradient detached during the policy phase to avoid interference
-    interacts_total=100_000_000,
-    num_envs=64,
-    n_epoch_pi=1,
-    n_epoch_vf=1,
-    gamma=.999,
-    aux_lr=5e-4,
-    lr=5e-4,
-    nminibatch=8,
-    aux_mbsize=4,
-    clip_param=.2,
-    kl_penalty=0.0,
-    n_aux_epochs=6,
-    n_pi=32,
-    beta_clone=1.0,
-    vf_true_weight=1.0,
-    log_dir='/tmp/ppg',
-    comm=None):
+             distribution_mode="hard",
+             arch="dual",  # 'shared', 'detach', or 'dual'
+             # 'shared' = shared policy and value networks
+             # 'dual' = separate policy and value networks
+             # 'detach' = shared policy and value networks, but with the value function gradient detached during the policy phase to avoid interference
+             interacts_total=100_000_000,
+             num_envs=64,
+             n_epoch_pi=1,
+             n_epoch_vf=1,
+             gamma=.999,
+             aux_lr=5e-4,
+             lr=5e-4,
+             nminibatch=8,
+             aux_mbsize=4,
+             clip_param=.2,
+             kl_penalty=0.0,
+             n_aux_epochs=6,
+             n_pi=32,
+             beta_clone=1.0,
+             vf_true_weight=1.0,
+             log_dir='/tmp/ppg',
+             comm=None):
     if comm is None:
         comm = MPI.COMM_WORLD
     tu.setup_dist(comm=comm)
@@ -76,9 +78,10 @@ def train_fn(env_name="coinrun",
         comm=comm,
     )
 
+
 def main():
     parser = argparse.ArgumentParser(description='Process PPG training arguments.')
-    parser.add_argument('--env_name', type=str, default='coinrun')
+    parser.add_argument('--env_name', type=str, default='coinrun', choices=ENV_NAMES)
     parser.add_argument('--num_envs', type=int, default=64)
     parser.add_argument('--n_epoch_pi', type=int, default=1)
     parser.add_argument('--n_epoch_vf', type=int, default=1)
@@ -86,7 +89,9 @@ def main():
     parser.add_argument('--n_pi', type=int, default=32)
     parser.add_argument('--clip_param', type=float, default=0.2)
     parser.add_argument('--kl_penalty', type=float, default=0.0)
-    parser.add_argument('--arch', type=str, default='dual') # 'shared', 'detach', or 'dual'
+    parser.add_argument('--arch', type=str, default='dual', choices=['shared', 'detach', 'dual'])
+    parser.add_argument('--interacts_total', type=int, default=100_000_000)
+    parser.add_argument('--log_dir', type=str, default='/tmp/ppg')
 
     args = parser.parse_args()
 
@@ -99,8 +104,14 @@ def main():
         n_epoch_vf=args.n_epoch_vf,
         n_aux_epochs=args.n_aux_epochs,
         n_pi=args.n_pi,
+        clip_param=args.clip_param,
+        kl_penalty=args.kl_penalty,
         arch=args.arch,
-        comm=comm)
+        comm=comm,
+        interacts_total=args.interacts_total,
+        log_dir=args.log_dir
+    )
+
 
 if __name__ == '__main__':
     main()

@@ -1,10 +1,9 @@
 from .graph_util import plot_experiment, switch_to_outer_plot
 from .constants import ENV_NAMES, NAME_TO_CASE, HARD_GAME_RANGES
-
 import matplotlib
 import matplotlib.pyplot as plt
-
 import argparse
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -24,6 +23,7 @@ def main():
     else:
         plt.show()
 
+
 def main_pcg_sample_entry(experiment_name, normalize_and_reduce):
     params = {
         'xtick.labelsize': 12,
@@ -35,9 +35,11 @@ def main_pcg_sample_entry(experiment_name, normalize_and_reduce):
     }
     matplotlib.rcParams.update(params)
 
-    kwargs = {'smoothing': .9}
+    kwargs = {
+        'smoothing': .9,
+        'x_scale': 4 * 256 * 64 / 1e6  # num_workers * num_steps_per_rollout * num_envs_per_worker / graph_scaling
+    }
 
-    kwargs['x_scale'] = 4 * 256 * 64 / 1e6 # num_workers * num_steps_per_rollout * num_envs_per_worker / graph_scaling
     normalization_ranges = HARD_GAME_RANGES
 
     y_label = 'Score'
@@ -62,8 +64,6 @@ def main_pcg_sample_entry(experiment_name, normalize_and_reduce):
         kwargs['csv_file_groups'] = [[f'ppgsingle-run{x}' for x in range(3)]]
     else:
         assert False, f"experiment_name {experiment_name} is invalid"
-        run_directory_prefix = experiment_name
-        kwargs['run_directory_prefix'] = f"{run_directory_prefix}-run"
 
     # We throw out the first few datapoints to give the episodic reward buffers time to fill up
     # Otherwise, there could be a short-episode bias
@@ -82,6 +82,7 @@ def main_pcg_sample_entry(experiment_name, normalize_and_reduce):
         ax0 = switch_to_outer_plot(fig)
         ax0.set_xlabel(x_label, labelpad=40)
         ax0.set_ylabel(y_label, labelpad=35)
+
 
 if __name__ == '__main__':
     main()
