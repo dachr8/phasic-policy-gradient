@@ -43,14 +43,42 @@ PPO baseline:
 nohup mpiexec -np 4 python -m phasic_policy_gradient.train --n_epoch_pi 3 --n_epoch_vf 3 --n_aux_epochs 0 --arch shared  --log_dir '/tmp/ppo' > /tmp/ppo.out &
 ```
 
-PPG, using L_KL instead of L_clip (results/ppgkl-runN):
+PPG, using L_KL instead of L_clip:
 
 ```
 nohup mpiexec -np 4 python -m phasic_policy_gradient.train --clip_param 0 --kl_penalty 1  --log_dir '/tmp/ppgkl' > /tmp/ppgkl.out &
 ```
 
-PPG, single network variant (results/ppgsingle-runN):
+PPG, single network variant:
 
 ```
 nohup mpiexec -np 4 python -m phasic_policy_gradient.train --arch detach  --log_dir '/tmp/ppg_single_network' > /tmp/ppg_single_network.out &
+```
+
+## Visualize
+
+Operating directory: project directory
+
+PPG with default hyperparameters (tmp/ppg-run0):
+
+```
+python -m phasic_policy_gradient.graph --experiment_name ppg --save
+```
+
+PPO baseline (tmp/ppo-run0):
+
+```
+python -m phasic_policy_gradient.graph --experiment_name ppo --save
+```
+
+PPG, using L_KL instead of L_clip (tmp/ppgkl-run0):
+
+```
+python -m phasic_policy_gradient.graph --experiment_name ppgkl --save
+```
+
+PPG, single network variant (tmp/ppgsingle-run0):
+
+```
+python -m phasic_policy_gradient.graph --experiment_name ppg_single_network --save
 ```
