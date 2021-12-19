@@ -66,7 +66,7 @@ def main_pcg_sample_entry(experiment_name, normalize_and_reduce, n_run, single_e
     elif experiment_name == 'ppgkl':
         kwargs['csv_file_groups'] = [[f'ppgkl-run{x}' for x in range(n_run)]]
     elif experiment_name == 'ppg_single_network':
-        kwargs['csv_file_groups'] = [[f'ppgsingle-run{x}' for x in range(n_run)]]
+        kwargs['csv_file_groups'] = [[f'ppg_single_network-run{x}' for x in range(n_run)]]
     else:
         assert False, f"experiment_name {experiment_name} is invalid"
 
